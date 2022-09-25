@@ -16,4 +16,8 @@ export default {
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorDark,
   },
+  primary: "#4949FF",
+  outline : '#C4C4C4',
+  warning: '#FF3C3C',
+  grey: '#D9D9D9'
 };
