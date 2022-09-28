@@ -69,7 +69,7 @@ const LoginScreen = ({navigation}) => {
                     onChangeText={handleChange("phonenumber")}
                     value={values.phonenumber}
                     label="Phone number"
-                    placeholder="First and Last name"
+                    placeholder="Enter Phone number"
                     onSubmitEditing={() => {
                       Keyboard.dismiss
                     }}
@@ -79,6 +79,7 @@ const LoginScreen = ({navigation}) => {
                     ref={phoneRef}
                     keypad="phone-pad"
                     phone={true}
+                    stylesExtra={{marginTop: 13}}
                   />
                   {errors.phonenumber && hasTouchedTel ? (
                     <ErrorText>{errors.phonenumber}</ErrorText>

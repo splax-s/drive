@@ -14,6 +14,7 @@ import { Octicons } from '@expo/vector-icons';
 import Call from '../assets/svg/call'
 import Lock from '../assets/svg/lock'
 import User from '../assets/svg/user'
+import SearchIcon from '../assets/svg/location'
 
 const CustomTextInput = React.forwardRef(
   (
@@ -39,7 +40,9 @@ const CustomTextInput = React.forwardRef(
       contact= false,
       person= false,
       phone = false,
-      pass= false
+      pass= false,
+      search= false,
+      stylesExtra
     },
     ref
   ) => {
@@ -52,7 +55,7 @@ const CustomTextInput = React.forwardRef(
           tapFunction();
         }}
       >
-        <View style={{marginTop: 13}}>
+        <View style={[stylesExtra]}>
         <Text style={styles.label}>{label}</Text>
         <View
         onLayout = {onLayout}
@@ -85,6 +88,9 @@ const CustomTextInput = React.forwardRef(
               ) : (null)}
               {pass ? (
                 <Lock/>
+              ) : (null)}
+              {search ? (
+                <SearchIcon/>
               ) : (null)}
                </TouchableOpacity>
             <TextInput

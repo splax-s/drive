@@ -95,6 +95,7 @@ const SignupScreen = ({navigation}) => {
                     password={false}
                     ref={nameRef}
                     person={true}
+                    stylesExtra={{marginTop: 13}}
                   />
                   {errors.name && hasTouchedName ? (
                     <ErrorText>{errors.name}</ErrorText>
@@ -120,6 +121,7 @@ const SignupScreen = ({navigation}) => {
                     ref={phoneRef}
                     keypad="phone-pad"
                     phone={true}
+                    stylesExtra={{marginTop: 13}}
                   />
                   {errors.phonenumber && hasTouchedTel ? (
                     <ErrorText>{errors.phonenumber}</ErrorText>
@@ -145,6 +147,7 @@ const SignupScreen = ({navigation}) => {
                     password={true}
                     ref={passwordRef}
                     pass={true}
+                    stylesExtra={{marginTop: 13}}
                   />
                   {errors.password && hasTouchedPassword ? (
                   <ErrorText>{errors.password}</ErrorText>
