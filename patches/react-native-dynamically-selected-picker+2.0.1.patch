@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-dynamically-selected-picker/src/DynamicallySelectedPicker.js b/node_modules/react-native-dynamically-selected-picker/src/DynamicallySelectedPicker.js
+index 5d1ea7c..00fdad4 100644
+--- a/node_modules/react-native-dynamically-selected-picker/src/DynamicallySelectedPicker.js
++++ b/node_modules/react-native-dynamically-selected-picker/src/DynamicallySelectedPicker.js
+@@ -1,7 +1,7 @@
+ import React from 'react';
+ import PropTypes from 'prop-types';
+ import {StyleSheet, View, ScrollView, Platform} from 'react-native';
+-import LinearGradient from 'react-native-linear-gradient';
++import LinearGradient from 'expo-linear-gradient';
+ import PickerListItem from './PickerListItem';
+ 
+ export default class DynamicallySelectedPicker extends React.Component {

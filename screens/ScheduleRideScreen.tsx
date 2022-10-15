@@ -7,34 +7,38 @@ import {
     TouchableWithoutFeedback,
     ScrollView,
     TouchableOpacity,
-    Platform
+    Platform,
+    Image
   } from "react-native";
   import React, { useEffect, useState, useRef } from "react";
   import { SafeAreaView } from "react-native-safe-area-context";
   import Colors from "../constants/Colors";
   import CustomButton from "../components/CustomButton";
-  import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
-  import User from "../assets/svg/user2";
-  const { width, height } = Dimensions.get("window");
-  import extraStyle from "../json.json";
-  import Home from "../assets/svg/home";
   import Back from "../assets/svg/back";
-  import Work from "../assets/svg/work";
-  import Calender from "../assets/svg/calender";
   import SearchIcon from "../assets/svg/location";
-  import Draggable from "react-native-draggable";
-  import CustomTextInput from "../components/CustomTextInput";
   import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
   import Plus from '../assets/svg/plus'
   import Real from '../assets/svg/real'
   import Arrow from '../assets/svg/arrow'
+  import ModalDatePicker from '../components/ModalDatePicker'
+  import ModalChangeCard from '../components/ModalChangeCard'
+  import LocIcon from "../assets/svg/locIcon"
+  import MasterCard from "../assets/svg/mastercard"
+import { ActivityIndicator } from "react-native-paper";
+
+
 const ScheduleRideScreen = ({navigation}) => {
     const fromRef = useRef();
   const whereRef = useRef();
+  const modalDatePicker = useRef();
+  const modalChangeCard = useRef();
   const [loading, setLoading] = useState(false);
   const [from, setFrom] = useState('')
   const [to, setTo] = useState('')
   const [disabled, setDisabled] = useState(true)
+  const [details, setDetails] = useState(false)
+  const [time, setTime] = useState('')
+  const [meridian, setMeridian] = useState('')
   useEffect(() => {
     if(typeof from === 'string' && from.trim().length === 0 || typeof to === 'string' && to.trim().length === 0){
         setDisabled(true)
@@ -57,7 +61,19 @@ const ScheduleRideScreen = ({navigation}) => {
 
     }, 3000);
 
+
+
 }
+
+const showModalDatePicker = () => {
+    modalDatePicker.current.open();
+
+};
+
+const showModalChangeCard = () => {
+  modalChangeCard.current.open();
+}
+
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -85,6 +101,22 @@ const ScheduleRideScreen = ({navigation}) => {
 
       <View style={{ paddingTop: 20, flex: 1, flexGrow: 1 }}>
 
+      <ModalDatePicker
+          ref={modalDatePicker}
+          close={() => {
+            modalDatePicker.current.close();
+          }}
+          details={setDetails}
+          time={setTime}
+          meridian={setMeridian}
+        />
+      <ModalChangeCard
+          ref={modalChangeCard}
+          close={() => {
+            modalChangeCard.current.close();
+          }}
+        />
+
         <GooglePlacesAutocomplete
           placeholder="Pickup Location"
           debounce={200}
@@ -95,6 +127,25 @@ const ScheduleRideScreen = ({navigation}) => {
           enablePoweredByContainer={false}
           nearbyPlacesAPI="GooglePlacesSearch"
           fetchDetails={true}
+          listEmptyComponent={() => (
+            <View style={{flex: 1}}>
+              <Text style={styles.text}>No results were found</Text>
+            </View>
+          )}
+          listLoaderComponent={()=>{
+            return(
+              <ActivityIndicator
+                color={Colors.primary}
+                size='small'
+                animating={true}
+                style={{
+                  alignItems: 'center',
+                  justifyContent: "center",
+                  flex: 1,
+                }}
+             />
+            )
+          }}
 
           renderLeftButton={() => (
             <SearchIcon/>
@@ -144,6 +195,7 @@ const ScheduleRideScreen = ({navigation}) => {
           query={{
             key: "AIzaSyBkI2Q0pVP9cuXHc_Xk3N8-nn_wKzSewKM",
             language: "en",
+            components: 'country:ng'
           }}
         />
 
@@ -153,6 +205,26 @@ const ScheduleRideScreen = ({navigation}) => {
           minLength={2}
           autoFocus={true}
           returnKeyType={'search'}
+          listEmptyComponent={() => (
+            <View style={{flex: 1}}>
+              <Text style={styles.text}>No results were found</Text>
+            </View>
+          )}
+          listLoaderComponent={()=>{
+            return(
+              <ActivityIndicator
+                color={Colors.primary}
+                size='small'
+                animating={true}
+                style={{
+                  alignItems: 'center',
+                  justifyContent: "center",
+                  flex: 1,
+
+                }}
+             />
+            )
+          }}
           //suppressDefaultStyles
           enablePoweredByContainer={false}
           nearbyPlacesAPI="GooglePlacesSearch"
@@ -206,19 +278,58 @@ const ScheduleRideScreen = ({navigation}) => {
           query={{
             key: "AIzaSyBkI2Q0pVP9cuXHc_Xk3N8-nn_wKzSewKM",
             language: "en",
+            components: 'country:ng'
           }}
         />
-        <TouchableOpacity style={styles.dates}>
+        <TouchableOpacity style={styles.dates} onPress={showModalDatePicker}>
           <Text style={styles.date1}>Set date and Time</Text>
           <Arrow/>
         </TouchableOpacity>
         <TouchableOpacity style={styles.plus}>
           <Plus/>
         </TouchableOpacity>
+
+          {details ? (
+            <View style={{marginTop: 36}}>
+              <View>
+            <Text style={styles.head}>Trip</Text>
+            <View style={{justifyContent: 'space-between', flexDirection: "row", marginTop: 37}}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <LocIcon/>
+            <Text style={styles.desc}>{from.slice(0, 23)}...</Text>
+            </View>
+            <Text style={styles.desc1}>{time} {meridian.toLowerCase()} Pickup</Text>
+            </View>
+            <View style={{width: 2, backgroundColor: 'rgba(217, 217, 217, 1)', height: 40, borderRadius: 20, left: 8.5}}/>
+            <View style={{justifyContent: 'space-between', flexDirection: "row",}}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <LocIcon/>
+            <Text style={styles.desc}>{to.slice(0, 23)}</Text>
+            </View>
+            <Text style={styles.desc1}>12:45 pm Dropoff</Text>
+            </View>
+          </View>
+          <View>
+          <View style={{marginTop: 23}}>
+            <Text style={styles.head}>Payments</Text>
+          </View>
+          <View style={{justifyContent: 'space-between', flexDirection: "row", marginTop: 37}}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <MasterCard/>
+            <Text style={styles.desc}>9645</Text>
+            </View>
+            <TouchableOpacity onPress={showModalChangeCard}>
+            <Text style={styles.link}>Switch</Text>
+            </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+          ) : null}
+
         <CustomButton
           _onPress={handleSubmit}
           title="Schedule Ride"
-          marginTop={410}
+          marginTop={details ? 130 : 400}
           loading={loading}
           textStyle={{color: 'white'}}
           disabled={disabled}
@@ -321,5 +432,26 @@ const styles = StyleSheet.create({
       },
       loc:{
         marginLeft: 10,
-      }
+      },
+      desc:{
+        marginLeft: 12,
+        fontFamily: 'lexend-regular',
+        fontSize: 14,
+      },
+      desc1:{
+        fontFamily: 'lexend-light',
+        fontSize: 14,
+        color: '#757575'
+      },
+      link: {
+        textDecorationLine: 'underline',
+        fontFamily: 'lexend-regular',
+        fontSize: 14,
+        color: Colors.primary
+      },
+      text:{
+        color: 'rgba(117, 117, 117, 1)',
+        fontFamily: 'lexend-regular',
+        fontSize: 14,
+      },
 })

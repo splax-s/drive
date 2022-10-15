@@ -15,6 +15,8 @@ import Call from '../assets/svg/call'
 import Lock from '../assets/svg/lock'
 import User from '../assets/svg/user'
 import SearchIcon from '../assets/svg/location'
+import Verify from '../assets/svg/verify'
+import Sms from '../assets/svg/sms'
 
 const CustomTextInput = React.forwardRef(
   (
@@ -42,7 +44,11 @@ const CustomTextInput = React.forwardRef(
       phone = false,
       pass= false,
       search= false,
-      stylesExtra
+      stylesExtra,
+      verify = false,
+      splax,
+      email= false,
+      max=60
     },
     ref
   ) => {
@@ -56,7 +62,7 @@ const CustomTextInput = React.forwardRef(
         }}
       >
         <View style={[stylesExtra]}>
-        <Text style={styles.label}>{label}</Text>
+        <Text style={[styles.label, splax]}>{label}</Text>
         <View
         onLayout = {onLayout}
           style={[
@@ -80,6 +86,9 @@ const CustomTextInput = React.forwardRef(
               onPress={tapFunction}
               style={{ marginLeft: 40 }}
             >
+              {email ? (
+                <Sms/>
+              ) : (null)}
               {person ? (
                 <User/>
               ) : (null)}
@@ -110,6 +119,7 @@ const CustomTextInput = React.forwardRef(
               onChangeText={onChangeText}
               selectionColor={Colors.primary}
               onBlur={onBlur}
+              maxLength = {max}
               value={value}
               returnKeyType={returnKeyType}
               onSubmitEditing={onSubmitEditing}
@@ -147,6 +157,9 @@ const CustomTextInput = React.forwardRef(
 
 
             </TouchableOpacity>
+          ) : null}
+          {verify ? (
+            <Verify/>
           ) : null}
         </View>
         </View>

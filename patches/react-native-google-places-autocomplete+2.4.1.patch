@@ -1,0 +1,80 @@
+diff --git a/node_modules/react-native-google-places-autocomplete/GooglePlacesAutocomplete.d.ts b/node_modules/react-native-google-places-autocomplete/GooglePlacesAutocomplete.d.ts
+index 1fbd5f9..ff80bd5 100644
+--- a/node_modules/react-native-google-places-autocomplete/GooglePlacesAutocomplete.d.ts
++++ b/node_modules/react-native-google-places-autocomplete/GooglePlacesAutocomplete.d.ts
+@@ -394,6 +394,8 @@ interface GooglePlacesAutocompleteProps {
+   keyboardShouldPersistTaps?: 'never' | 'always' | 'handled';
+   /** use the ListEmptyComponent prop when no autocomplete results are found. */
+   listEmptyComponent?: JSX.Element | React.ComponentType<{}>;
++   /** use the ListLoaderComponent prop when no results are loading. */
++   listLoaderComponent?: JSX.Element | React.ComponentType<{}>;
+   listUnderlayColor?: string;
+   listViewDisplayed?: 'auto' | boolean;
+   /** minimum length of text to search */
+diff --git a/node_modules/react-native-google-places-autocomplete/GooglePlacesAutocomplete.js b/node_modules/react-native-google-places-autocomplete/GooglePlacesAutocomplete.js
+index cd03253..e19f532 100644
+--- a/node_modules/react-native-google-places-autocomplete/GooglePlacesAutocomplete.js
++++ b/node_modules/react-native-google-places-autocomplete/GooglePlacesAutocomplete.js
+@@ -138,6 +138,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
+   const [listViewDisplayed, setListViewDisplayed] = useState(
+     props.listViewDisplayed === 'auto' ? false : props.listViewDisplayed,
+   );
++  const [listLoaderDisplayed, setListLoaderDisplayed] = useState(false);
+   const [url] = useState(getRequestUrl(props.requestUrl));
+ 
+   const inputRef = useRef();
+@@ -409,9 +410,11 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
+       request.ontimeout = props.onTimeout;
+       request.onreadystatechange = () => {
+         if (request.readyState !== 4) {
++          setListLoaderDisplayed(true);
+           return;
+         }
+ 
++        setListLoaderDisplayed(false);
+         if (request.status === 200) {
+           const responseJSON = JSON.parse(request.responseText);
+ 
+@@ -487,9 +490,11 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
+       request.ontimeout = props.onTimeout;
+       request.onreadystatechange = () => {
+         if (request.readyState !== 4) {
++          setListLoaderDisplayed(true);
+           return;
+         }
+ 
++        setListLoaderDisplayed(false);
+         if (request.status === 200) {
+           const responseJSON = JSON.parse(request.responseText);
+           if (typeof responseJSON.predictions !== 'undefined') {
+@@ -769,7 +774,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
+           ItemSeparatorComponent={_renderSeparator}
+           renderItem={({ item, index }) => _renderRow(item, index)}
+           ListEmptyComponent={
+-            stateText.length > props.minLength && props.listEmptyComponent
++            listLoaderDisplayed
++              ? props.listLoaderComponent
++              : stateText.length > props.minLength && props.listEmptyComponent
+           }
+           ListHeaderComponent={
+             props.renderHeaderComponent &&
+@@ -862,6 +869,7 @@ GooglePlacesAutocomplete.propTypes = {
+   isRowScrollable: PropTypes.bool,
+   keyboardShouldPersistTaps: PropTypes.oneOf(['never', 'always', 'handled']),
+   listEmptyComponent: PropTypes.func,
++  listLoaderComponent: PropTypes.func,
+   listUnderlayColor: PropTypes.string,
+   // Must write it this way: https://stackoverflow.com/a/54290946/7180620
+   listViewDisplayed: PropTypes.oneOfType([
+diff --git a/node_modules/react-native-google-places-autocomplete/README.md b/node_modules/react-native-google-places-autocomplete/README.md
+index 97d658c..6225287 100644
+--- a/node_modules/react-native-google-places-autocomplete/README.md
++++ b/node_modules/react-native-google-places-autocomplete/README.md
+@@ -236,6 +236,7 @@ _This list is a work in progress. PRs welcome!_
+ | keepResultsAfterBlur          | boolean  | show list of results after blur                                                                                                                                                                                                             | false                                                             | true \| false                                              |
+ | keyboardShouldPersistTaps     | string   | Determines when the keyboard should stay visible after a tap https://reactnative.dev/docs/scrollview#keyboardshouldpersisttaps                                                                                                              | 'always'                                                          | 'never' \| 'always' \| 'handled'                           |
+ | listEmptyComponent            | function | use FlatList's ListEmptyComponent prop when no autocomplete results are found.                                                                                                                                                              |                                                                   |                                                            |
++| listLoaderComponent           | function | show this component while results are loading                                                                                                                                                                                               |                                                                   |                                                            |
+ | listUnderlayColor             | string   | underlay color of the list result when pressed https://reactnative.dev/docs/touchablehighlight#underlaycolor                                                                                                                                | '#c8c7cc'                                                         |                                                            |
+ | listViewDisplayed             | string   | override the default behavior of showing the list (results) view                                                                                                                                                                            | 'auto'                                                            | 'auto' \| true \| false                                    |
+ | minLength                     | number   | minimum length of text to trigger a search                                                                                                                                                                                                  | 0                                                                 |                                                            |

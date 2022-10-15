@@ -1,10 +1,19 @@
 {
   "expo": {
     "name": "drive",
+    "owner": "personnel",
     "slug": "drive",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
+    ],
     "scheme": "myapp",
     "userInterfaceStyle": "light",
     "splash": {
@@ -19,7 +28,14 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIUserInterfaceStyle": "Light",
+        "NSFaceIDUsageDescription": "Authenticate log in",
+        "NSCameraUsageDescription" : "Allow $(PRODUCT_NAME) to access your camera",
+        "NSMicrophoneUsageDescription" : "Allow $(PRODUCT_NAME) to access your microphone",
+        "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access your photos"
+      }
     },
     "android": {
       "adaptiveIcon": {

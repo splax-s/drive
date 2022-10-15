@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
   TouchableOpacity,
-  Platform
+  Platform,
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -27,6 +27,7 @@ import CustomTextInput from "../components/CustomTextInput";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Plus from '../assets/svg/plus'
 import Real from '../assets/svg/real'
+import { ActivityIndicator } from "react-native-paper";
 
 const SearchScreen = ({ navigation }) => {
   const fromRef = useRef();
@@ -95,6 +96,25 @@ const SearchScreen = ({ navigation }) => {
             placeholderTextColor: 'rgba(117, 117, 117, 1)',
             returnKeyType: "search"
           }}
+          listEmptyComponent={() => (
+            <View style={{flex: 1}}>
+              <Text style={styles.text}>No results were found</Text>
+            </View>
+          )}
+          listLoaderComponent={()=>{
+            return(
+              <ActivityIndicator
+                color={Colors.primary}
+                size='small'
+                animating={true}
+                style={{
+                  alignItems: 'center',
+                  justifyContent: "center",
+                  flex: 1,
+                }}
+             />
+            )
+          }}
           //suppressDefaultStyles
           enablePoweredByContainer={false}
           nearbyPlacesAPI="GooglePlacesSearch"
@@ -144,6 +164,7 @@ const SearchScreen = ({ navigation }) => {
           query={{
             key: "AIzaSyBkI2Q0pVP9cuXHc_Xk3N8-nn_wKzSewKM",
             language: "en",
+            components: 'country:ng'
           }}
         />
 
@@ -152,6 +173,20 @@ const SearchScreen = ({ navigation }) => {
           debounce={200}
           minLength={2}
           autoFocus={true}
+          listLoaderComponent={()=>{
+            return(
+              <ActivityIndicator
+                color={Colors.primary}
+                size='small'
+                animating={true}
+                style={{
+                  alignItems: 'center',
+                  justifyContent: "center",
+                  flex: 1,
+                }}
+             />
+            )
+          }}
           returnKeyType={'search'}
           //suppressDefaultStyles
           enablePoweredByContainer={false}
@@ -161,7 +196,11 @@ const SearchScreen = ({ navigation }) => {
           }}
           nearbyPlacesAPI="GooglePlacesSearch"
           fetchDetails={true}
-
+          listEmptyComponent={() => (
+            <View style={{flex: 1}}>
+              <Text style={styles.text}>No results were found</Text>
+            </View>
+          )}
           renderLeftButton={() => (
             <SearchIcon/>
           )}
@@ -206,6 +245,7 @@ const SearchScreen = ({ navigation }) => {
           query={{
             key: "AIzaSyBkI2Q0pVP9cuXHc_Xk3N8-nn_wKzSewKM",
             language: "en",
+            components: 'country:ng'
           }}
         />
         <TouchableOpacity style={styles.plus}>
@@ -315,5 +355,10 @@ const styles = StyleSheet.create({
   },
   loc:{
     marginLeft: 10,
-  }
+  },
+  text:{
+    color: 'rgba(117, 117, 117, 1)',
+    fontFamily: 'lexend-regular',
+    fontSize: 14,
+  },
 });

@@ -13,8 +13,10 @@
  import TabOneScreen from '../screens/TabOneScreen';
  import TabTwoScreen from '../screens/TabTwoScreen';
  import HomeScreen from '../screens/HomeScreen';
+ import MoreScreen from '../screens/MoreScreen'
  import SVG, {Path, G} from 'react-native-svg';
  import { useSafeAreaInsets } from "react-native-safe-area-context";
+ import TripsScreen from '../screens/TripsScreen';
 
 
 const BottomTab = createBottomTabNavigator();
@@ -63,7 +65,13 @@ export default function BottomTabNavigator() {
           tabBarLabelStyle: styles.label,
           tabBarItemStyle : styles.item,
 
-      }}>
+      }}
+      safeAreaInsets = {{
+        top: 0,
+        left: 0,
+        right: 0,
+    }}
+      >
       <BottomTab.Screen
         name="Rides"
         component={HomeScreen}
@@ -75,7 +83,7 @@ export default function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Trips"
-        component={TabTwoScreen}
+        component={TripsScreen}
         options={{
           title: 'Trips',
           headerShown: false,
@@ -84,7 +92,7 @@ export default function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="More"
-        component={TabTwoScreen}
+        component={MoreScreen}
         options={{
           title: 'More',
           headerShown: false,
@@ -106,7 +114,10 @@ const styles = StyleSheet.create({
   tabContainer: {
 
     borderTopWidth: 0,
-    shadowOpacity: 0.1
+    shadowOpacity: 0.1,
+    elevation:0.1,
+
+
   },
   item  :{
 

@@ -1,0 +1,41 @@
+diff --git a/node_modules/@nyashanziramasanga/react-native-horizontal-scroll-menu/src/index.tsx b/node_modules/@nyashanziramasanga/react-native-horizontal-scroll-menu/src/index.tsx
+index b4c227a..dddb9de 100644
+--- a/node_modules/@nyashanziramasanga/react-native-horizontal-scroll-menu/src/index.tsx
++++ b/node_modules/@nyashanziramasanga/react-native-horizontal-scroll-menu/src/index.tsx
+@@ -93,9 +93,9 @@ const HorizontalScrollMenu: React.FC<HorizontalScrollMenu> = ({
+     <View style={[scrollAreaStyle, styles.scrollAreaStyle]}>
+       <ScrollView
+         ref={scrollViewRef}
+-        bounces={true}
++        bounces={false}
+         horizontal={true}
+-        pagingEnabled={false}
++        pagingEnabled={true}
+         contentContainerStyle={[styles.contentContainerStyle, { paddingHorizontal: centerPadding }]}
+         showsHorizontalScrollIndicator={false}
+         scrollEventThrottle={200}
+@@ -137,13 +137,11 @@ const styles = StyleSheet.create({
+   tabItem: {
+     borderRadius: 10,
+     borderColor: '#E4E4E4',
+-    borderWidth: 1,
+-    alignItems: 'center',
+-    justifyContent: 'center',
+-    padding: 5,
++
+   },
+   tabItemText: {
+     color: '#8C8C8C',
++    fontFamily: 'lexend-regular'
+   },
+   tabItemFocused: {
+     borderWidth: 0,
+@@ -152,7 +150,7 @@ const styles = StyleSheet.create({
+     color: '#FFFFFF',
+   },
+   buttonStyles: {
+-    marginRight: 10,
++    marginRight: 0,
+   },
+   contentContainerStyle: {
+     alignItems: 'center',

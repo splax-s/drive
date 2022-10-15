@@ -1,0 +1,19 @@
+diff --git a/node_modules/react-native-infinite-looping-scroll/src/index.js b/node_modules/react-native-infinite-looping-scroll/src/index.js
+index 7017090..5d5fbd5 100644
+--- a/node_modules/react-native-infinite-looping-scroll/src/index.js
++++ b/node_modules/react-native-infinite-looping-scroll/src/index.js
+@@ -18,12 +18,12 @@ export default class InfiniteScroll extends Component {
+                 data: prevState.data.slice(length * 2)
+             }))
+ 
+-        if (contentOffset.y <= this.props.offset) {
++        if (contentOffset.x <= this.props.offset) {
+             this.setState(prevState => ({
+                 data: [...prevState.data, ...data],
+             }), () => this.infListRef.scrollToIndex({ index: length, animated: false }))
+         }
+-        if (layoutMeasurement.height + contentOffset.y >= contentSize.height - this.props.offset && this.state.end) {
++        if (layoutMeasurement.width + contentOffset.x >= contentSize.width - this.props.offset && this.state.end) {
+             this.setState(prevState => ({
+                 data: [...prevState.data, ...data],
+                 end: false

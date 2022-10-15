@@ -29,6 +29,8 @@ import SearchScreen from '../screens/SearchScreen'
 import AddWorkScreen from '../screens/AddWorkScreen'
 import AddHomeScreen from '../screens/AddHomeScreen'
 import ScheduleRideScreen from '../screens/ScheduleRideScreen'
+import ProfileScreen from '../screens/ProfileScreen'
+
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -103,6 +105,11 @@ function RootNavigator() {
           <Stack.Screen
           name= "Schedule"
           component={ScheduleRideScreen}
+          options={{ headerShown: false }}
+          />
+          <Stack.Screen
+          name= "Profile"
+          component={ProfileScreen}
           options={{ headerShown: false }}
           />
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
