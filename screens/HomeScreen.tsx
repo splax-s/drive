@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, Animated, Platform,  Keyboard, TouchableWithoutFeedback, ScrollView, TouchableOpacity, Image, FlatList, Easing } from 'react-native'
+import { StyleSheet, Text, Share, View, Dimensions, Animated, Platform,  Keyboard, TouchableWithoutFeedback, ScrollView, TouchableOpacity, Image, FlatList, Easing } from 'react-native'
 import React,{useEffect, useState, useRef} from 'react'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import Colors from '../constants/Colors'
@@ -11,7 +11,7 @@ import Home from '../assets/svg/home'
 import Work from '../assets/svg/work'
 import Draggable from 'react-native-draggable';
 import CustomTextInput from '../components/CustomTextInput'
-import Back from '../assets/svg/back'
+import Shared from '../assets/svg/share'
 import Recents from '../assets/svg/recent'
 import Edit from '../assets/svg/edit'
 import Gps from '../assets/svg/gps'
@@ -22,8 +22,13 @@ import carDetails from '../data/cars'
 import numbro from 'numbro'
 import Right from '../assets/svg/right'
 import LocIcon from "../assets/svg/locIcon"
+import Cancel1 from '../assets/svg/cancel1'
+import Chat from '../assets/svg/chat'
+import Calls from '../assets/svg/calls'
+import Modal from "react-native-modal";
 import { useRoute } from '@react-navigation/native'
 const splax= extraStyle
+// console.log(width)
 
 
 const HomeScreen = ({navigation}) => {
@@ -39,9 +44,11 @@ const HomeScreen = ({navigation}) => {
   const bro1 = 'Abike wilson'
     const lookupRef = useRef()
     const modalChangeCard = useRef();
+    const [isModalVisible, setModalVisible] = useState(false);
     const [imagePicked, setImagePicked] = useState(false)
     const [picked, setPicked] = useState("https://deleoye.ng/wp-content/uploads/2016/11/Dummy-image.jpg")
     const [scheduled, setScheduled] = useState(true)
+    const [loaded, setLoaded]=useState(false)
 
     const showModalChangeCard = () => {
       modalChangeCard.current.open();
@@ -64,6 +71,35 @@ const HomeScreen = ({navigation}) => {
       //console.log('hi')
       getData()
     },[imagePicked, picked])
+    const hiii = () =>{
+      setModalVisible(true)
+    }
+
+
+    const shared = async () => {
+      try {
+        const result = await Share.share({
+          message:
+            'Exon | Share your trips with friends and family with love',
+            url: 'https://www.github.com/',
+            title: 'Exon | Share your trips with friends and family with love'
+        },{
+          subject: 'Exon | Share your trips with friends and family with love',
+          tintColor: '#black'
+        });
+        if (result.action === Share.sharedAction) {
+          if (result.activityType) {
+            // shared with activity type of result.activityType
+          } else {
+            // shared
+          }
+        } else if (result.action === Share.dismissedAction) {
+          // dismissed
+        }
+      } catch (error) {
+        alert(error.message);
+      }
+    }
 
 
 
@@ -405,16 +441,16 @@ const HomeScreen = ({navigation}) => {
             paddingBottom: 36
           }}>Locating the nearest driver</Text>
           <View accessibilityRole={'progressbar'} style={{backgroundColor: '#F8F8F8', height: 10, width: '100%', flexDirection: 'row'}}>
-            <Animated.View style={{backgroundColor:Colors.primary, height: 10, width: '20%', marginLeft: 116, transform: [{
-            rotateZ: rotationDegree.interpolate({
-              inputRange: [0, 360],
-              outputRange: ['0deg', '360deg']
+            <Animated.View style={{backgroundColor:Colors.primary, height: 10, width: '20%', marginLeft: 110, transform: [{
+            translateX: rotationDegree.interpolate({
+              inputRange: [0, 100],
+              outputRange: [-width, width * 2.5]
             })
           }]}}/>
-            <Animated.View style={{backgroundColor:Colors.primary, height: 10, width: '20%', marginLeft: 116, transform: [{
-            rotateZ: rotationDegree.interpolate({
-              inputRange: [0, 360],
-              outputRange: ['0deg', '360deg']
+            <Animated.View style={{backgroundColor:Colors.primary, height: 10, width: '20%', marginLeft: 110, transform: [{
+            translateX: rotationDegree.interpolate({
+              inputRange: [0, 100],
+              outputRange: [-width, width * 2.5 ]
             })
           }]}}/>
           </View>
@@ -423,12 +459,114 @@ const HomeScreen = ({navigation}) => {
         </SafeAreaView>
       </>
     )
+
+    const content5 = (
+      <>
+      <View style={{height: '70%'}}>
+
+        <MapView
+      style={styles.map}
+      showsUserLocation = {true}
+      provider={PROVIDER_GOOGLE}
+      followsUserLocation={true}
+     zoomEnabled = {true}
+     customMapStyle={splax}
+     //zoomControlEnabled={true}
+          initialRegion={{
+            latitude: 6.436034,
+            longitude: 3.444399,
+            latitudeDelta: 0.0822,
+            longitudeDelta: 0.0421,
+          }}
+      >
+        <Marker
+            coordinate={{ latitude: 6.436034,
+               longitude: 3.444399 }}
+            title={"Exon"}
+            description={"Your current location"}
+            draggable
+            onDragEnd={
+                (e) => alert(JSON.stringify(e.nativeEvent.coordinate))
+              }
+          >
+            <View style={{backgroundColor: "black", padding: 10, borderRadius: 10, alignItems: "center"}}>
+                <User/>
+            </View>
+          </Marker>
+      </MapView>
+        </View>
+        <TouchableOpacity style={styles.deff}>
+                <Text>{bro.slice(0,20)}</Text>
+                <Right/>
+                <Text>{bro1.slice(0,20)}</Text>
+
+        </TouchableOpacity>
+        <View style={styles.scheduled1}>
+          <Text style={styles.texts12}>Driver is 5 minutes away</Text>
+          <TouchableOpacity style={{marginBottom: 30}} onPress={shared}>
+          {/* <Text>                           </Text> */}
+          <Shared/>
+          </TouchableOpacity>
+          </View>
+        <SafeAreaView style={[styles.miniContainer, {height: 229}]}>
+        <View style={{alignItems: 'center'}}>
+        <View style={{borderWidth: 2, borderColor:'#D9D9D9', width: '15%', borderRadius: 50}}/>
+        </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
+          <View>
+        <View style={{alignItems: 'center', flexDirection: 'row', marginTop : 26}}>
+                <View style={{alignItems: 'center'}}>
+                  <View style={{borderRadius: 50, height:60, width: 60, backgroundColor: '#D9D9D9', alignItems: 'center', justifyContent: 'center'}}>
+                  <Image source={require('../assets/icon/image.jpeg')} style={{height: 50, width: 50, borderRadius: 50}}/>
+                  </View>
+                  </View>
+                  <View style={{alignItems: 'center', marginLeft: 12}}>
+                  <Text style={[styles.name,{marginRight  : "auto"}]}>Samuel</Text>
+                  <Text style={styles.people}>Black Tesla Model 3</Text>
+                  </View>
+                  <View style={[styles.second,{marginLeft  : "auto"}]}>
+                  <Text style = {[styles.price,{marginLeft: 'auto', fontSize: 17}]}>XYC34468</Text>
+                  <Text style={styles.minutes1}>License Plate</Text>
+                  </View>
+                  </View>
+                  <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 25}}>
+                    <View style={{alignItems: 'center'}}>
+                      <TouchableOpacity onPress={()=> {navigation.navigate('Call')}}>
+                      <Calls/>
+                      </TouchableOpacity>
+                      <Text style={styles.driver}>Call Driver</Text>
+                    </View>
+                    <View style={{alignItems: 'center'}}>
+                      <TouchableOpacity onPress={()=>{
+                        navigation.navigate('Chats')
+                      }
+                      }>
+                      <Chat/>
+                      </TouchableOpacity>
+                      <Text style={styles.driver}>Chat</Text>
+                    </View>
+                    <View style={{alignItems: 'center'}}>
+                      <TouchableOpacity onPress={()=>{
+                        hiii()
+                        }}>
+                      <Cancel1/>
+                      </TouchableOpacity>
+                      <Text style={[styles.driver, {color: '#FF3737'}]}>Cancel ride</Text>
+                    </View>
+                  </View>
+                </View>
+        </TouchableWithoutFeedback>
+        </SafeAreaView>
+      </>
+    )
+
+
     const [rideStatus, setRideStatus] = useState(content1)
-      const durationMs = 1000
+      const durationMs = 3500
   Animated.loop(Animated.timing(
     rotationDegree,
     {
-      toValue: 360,
+      toValue: 50,
       duration: durationMs,
       easing: Easing.linear,
       useNativeDriver: false
@@ -438,12 +576,54 @@ const HomeScreen = ({navigation}) => {
       useEffect(() => {
         if(rideRequest) {
 
-          setRideStatus(content2)
+          setRideStatus(content4)
         }
       }, [rideRequest])
 
+
+      setTimeout(() => {
+        setLoaded(true);
+      }, 10000)
+
+
+      useEffect(() => {
+        if(loaded) {
+          setRideStatus(content5)
+        }
+      }, [loaded])
     return (
     <View style={styles.container}>
+      <Modal isVisible={isModalVisible}
+      // animationIn="slideInLeft"
+      // animationOut="slideOutRight"
+
+      onBackButtonPress={()=> {
+        setModalVisible(!isModalVisible)
+      }}
+      // onBackdropPress={()=> {
+      //   setModalVisible(!isModalVisible)
+      // }}
+      >
+        <View style={styles.content}>
+          <Text style={{fontSize:18,
+          fontFamily: 'lexend-regular'
+          }}>Cancel Ride</Text>
+          <Text style={{fontSize:14,
+          fontFamily: 'lexend-regular',
+          color: '#757575',
+          marginTop:24
+          }}>Are you sure you want to end the trip?</Text>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 24}}>
+            <TouchableOpacity style={{height: 42, width:118, borderRadius: 10, alignItems: 'center', justifyContent: 'center'}} onPress={()=> {setModalVisible(false)}}>
+              <Text style={{fontSize:14, fontFamily: 'lexend-medium'}}>Cancel</Text>
+            </TouchableOpacity>
+            <Text>                </Text>
+            <TouchableOpacity style={{height: 42, backgroundColor: "#FFF1F1", width:118, borderRadius: 10, alignItems: 'center', justifyContent: 'center'}}>
+              <Text style={{fontSize:14, color: '#FF3737', fontFamily: 'lexend-medium'}}>End trip</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       {rideStatus}
     </View>
   )
@@ -512,6 +692,24 @@ const styles = StyleSheet.create({
         top: '45%',
         elevation: 100,
       },
+      scheduled1: {
+        width: '100%',
+        backgroundColor: Colors.primary,
+        height: height/8,
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: 30,
+        alignItems: 'center',
+        position: 'absolute',
+        flex:1,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        top: '63%',
+        elevation: 100,
+      },
       texts12:{
         fontSize: 14,
         fontFamily: 'lexend-regular',
@@ -547,6 +745,13 @@ const styles = StyleSheet.create({
         fontFamily: 'lexend-regular',
         marginLeft: 'auto'
       },
+      minutes1:{
+        marginTop: 6,
+        color: '#757575',
+        fontFamily: 'lexend-regular',
+        marginLeft: 'auto',
+        fontSize: 12,
+      },
       price:{
         fontFamily: 'lexend-medium',
         fontSize: 16,
@@ -566,5 +771,18 @@ const styles = StyleSheet.create({
         elevation: 1,
         //shadowOpacity: 0.1,
         flexDirection: 'row',
-      }
+      },
+      driver:{
+        fontFamily: 'lexend-regular',
+        fontSize: 13,
+        marginTop: 12,
+      },
+      content: {
+        backgroundColor: 'white',
+        padding: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10,
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+      },
 })

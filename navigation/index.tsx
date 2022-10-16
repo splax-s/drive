@@ -30,6 +30,8 @@ import AddWorkScreen from '../screens/AddWorkScreen'
 import AddHomeScreen from '../screens/AddHomeScreen'
 import ScheduleRideScreen from '../screens/ScheduleRideScreen'
 import ProfileScreen from '../screens/ProfileScreen'
+import ChatsScreen from '../screens/ChatsScreen';
+import CallScreen from '../screens/CallScreen';
 
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
@@ -113,6 +115,16 @@ function RootNavigator() {
           options={{ headerShown: false }}
           />
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
+      <Stack.Screen
+          name= "Chats"
+          component={ChatsScreen}
+          options={{ headerShown: false }}
+          />
+          <Stack.Screen
+          name= "Call"
+          component={CallScreen}
+          options={{ headerShown: false }}
+          />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
