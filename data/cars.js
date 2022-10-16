@@ -17,13 +17,4 @@ export default [
         priceEnd: '2500',
         distance: '10'
     },
-    // {
-    //     id: '3',
-    //     name: 'Exon XX',
-    //     image: require('../assets/icon/car.png'),
-    //     people: '20',
-    //     priceStart: '3400',
-    //     priceEnd: '6900',
-    //     distance: '40',
-    // }
 ]

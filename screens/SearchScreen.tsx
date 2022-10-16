@@ -53,6 +53,7 @@ const SearchScreen = ({ navigation }) => {
     };
 
     setTimeout(() => {
+      navigation.navigate('Rides', {rideRequest: true})
       setLoading(false);
 
 

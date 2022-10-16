@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, Platform,  Keyboard, TouchableWithoutFeedback, ScrollView, TouchableOpacity, Image, FlatList } from 'react-native'
+import { StyleSheet, Text, View, Dimensions, Animated, Platform,  Keyboard, TouchableWithoutFeedback, ScrollView, TouchableOpacity, Image, FlatList, Easing } from 'react-native'
 import React,{useEffect, useState, useRef} from 'react'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import Colors from '../constants/Colors'
@@ -20,19 +20,33 @@ import MasterCard from "../assets/svg/mastercard"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import carDetails from '../data/cars'
 import numbro from 'numbro'
+import Right from '../assets/svg/right'
+import LocIcon from "../assets/svg/locIcon"
+import { useRoute } from '@react-navigation/native'
 const splax= extraStyle
 
 
 const HomeScreen = ({navigation}) => {
+  //const {rideRequest} = route.params
+
+  const route = useRoute();
+
+  let props = route?.params;
+  let rideRequest = props?.rideRequest;
+  const rotationDegree = useRef(new Animated.Value(0)).current
+
+  const bro = 'Maple Court'
+  const bro1 = 'Abike wilson'
     const lookupRef = useRef()
     const modalChangeCard = useRef();
     const [imagePicked, setImagePicked] = useState(false)
     const [picked, setPicked] = useState("https://deleoye.ng/wp-content/uploads/2016/11/Dummy-image.jpg")
     const [scheduled, setScheduled] = useState(true)
-    const [rideStatus, setRideStatus] = useState('rideType')
+
     const showModalChangeCard = () => {
       modalChangeCard.current.open();
     }
+
 
     useEffect(()=>{
       const getData = async () => {
@@ -51,96 +65,13 @@ const HomeScreen = ({navigation}) => {
       getData()
     },[imagePicked, picked])
 
+
+
+
     //car ride type finder
-
-
-  return (
-    <View style={styles.container}>
-      {rideStatus === "rideType" ? (
-        <>
-        <View style={{height: '61%'}}>
-        <ModalChangeCard
-          ref={modalChangeCard}
-          close={() => {
-            modalChangeCard.current.close();
-          }}
-        />
-        <MapView
-      style={styles.map}
-      showsUserLocation = {true}
-      provider={PROVIDER_GOOGLE}
-      followsUserLocation={true}
-     zoomEnabled = {true}
-     customMapStyle={splax}
-     //zoomControlEnabled={true}
-          initialRegion={{
-            latitude: 6.436034,
-            longitude: 3.444399,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-      >
-        <Marker
-            coordinate={{ latitude: 6.436034,
-               longitude: 3.444399 }}
-            title={"Exon"}
-            description={"Your current location"}
-            draggable
-            onDragEnd={
-                (e) => alert(JSON.stringify(e.nativeEvent.coordinate))
-              }
-          >
-            <View style={{backgroundColor: "black", padding: 10, borderRadius: 10, alignItems: "center"}}>
-                <User/>
-            </View>
-          </Marker>
-      </MapView>
-        </View>
-        <SafeAreaView style={[styles.miniContainer, {height: 297}]}>
-        <View style={{alignItems: 'center'}}>
-        <View style={{borderWidth: 2, borderColor:'#D9D9D9', width: '20%', borderRadius: 50}}/>
-        </View>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
-        <View>
-          <FlatList
-          data={carDetails}
-          keyExtractor={(item, index) => item.id.toString()}
-          renderItem={({item}) =>(
-            <View style={{alignItems: 'center', flexDirection: 'row', marginTop : 35}}>
-                <View style={{alignItems: 'center'}}>
-                  <Image source={item.image} style={{height: 50, width: 79.22}}/>
-                  </View>
-                  <View style={{alignItems: 'center'}}>
-                  <Text style={[styles.name,{marginRight  : "auto"}]}>{item.name}</Text>
-                  <Text>{item.people} people</Text>
-                  </View>
-                  <View style={{marginLeft  : "auto"}}>
-                  <Text style = {{marginLeft : "auto"}}>₦{numbro(item.priceStart).format({thousandSeparated: true,})} - {numbro(item.priceEnd).format({thousandSeparated: true,})}</Text>
-                  <Text>{item.distance} minutes away</Text>
-                  </View>
-                </View>
-
-          )}
-          showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{paddingTop: 0}}
-          />
-        <View style={{justifyContent: 'space-between', flexDirection: "row", marginTop: 37}}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <MasterCard/>
-            <Text style={styles.desc}>9645</Text>
-            </View>
-            <TouchableOpacity onPress={showModalChangeCard}>
-            <Text style={styles.link}>Switch</Text>
-            </TouchableOpacity>
-            </View>
-        </View>
-        </TouchableWithoutFeedback>
-        </SafeAreaView>
-        </>
-  ) : (
-    <>
-    <View style={{height: '51%'}}>
+    const content1 = (
+      <>
+      <View style={{height: '51%'}}>
       <MapView
       style={styles.map}
       showsUserLocation = {true}
@@ -149,12 +80,12 @@ const HomeScreen = ({navigation}) => {
      zoomEnabled = {true}
      customMapStyle={splax}
      //zoomControlEnabled={true}
-          initialRegion={{
-            latitude: 28.579660,
-            longitude: 77.321110,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
+     initialRegion={{
+      latitude: 6.436034,
+      longitude: 3.444399,
+      latitudeDelta: 0.0822,
+      longitudeDelta: 0.0421,
+    }}
       >
         {/* <Marker
             coordinate={{ latitude: 28.579660, longitude: 77.321110 }}
@@ -241,9 +172,279 @@ const HomeScreen = ({navigation}) => {
                   </View>
             </TouchableWithoutFeedback>
     </SafeAreaView>
-    </>
-  )}
+      </>
+    )
 
+    const content2 = (
+      <>
+      <View style={{height: '61%'}}>
+        <ModalChangeCard
+          ref={modalChangeCard}
+          close={() => {
+            modalChangeCard.current.close();
+          }}
+        />
+        <MapView
+      style={styles.map}
+      showsUserLocation = {true}
+      provider={PROVIDER_GOOGLE}
+      followsUserLocation={true}
+     zoomEnabled = {true}
+     customMapStyle={splax}
+     //zoomControlEnabled={true}
+          initialRegion={{
+            latitude: 6.436034,
+            longitude: 3.444399,
+            latitudeDelta: 0.0822,
+            longitudeDelta: 0.0421,
+          }}
+      >
+        <Marker
+            coordinate={{ latitude: 6.436034,
+               longitude: 3.444399 }}
+            title={"Exon"}
+            description={"Your current location"}
+            draggable
+            onDragEnd={
+                (e) => alert(JSON.stringify(e.nativeEvent.coordinate))
+              }
+          >
+            <View style={{backgroundColor: "black", padding: 10, borderRadius: 10, alignItems: "center"}}>
+                <User/>
+            </View>
+          </Marker>
+      </MapView>
+        </View>
+        <TouchableOpacity style={styles.deff}>
+                <Text>{bro.slice(0,20)}</Text>
+                <Right/>
+                <Text>{bro1.slice(0,20)}</Text>
+
+        </TouchableOpacity>
+        <SafeAreaView style={[styles.miniContainer, {height: 297}]}>
+        <View style={{alignItems: 'center'}}>
+        <View style={{borderWidth: 2, borderColor:'#D9D9D9', width: '20%', borderRadius: 50}}/>
+        </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
+        <View>
+          <FlatList
+          data={carDetails}
+          keyExtractor={(item, index) => item.id.toString()}
+          renderItem={({item}) =>(
+            <TouchableOpacity style={{alignItems: 'center', flexDirection: 'row', marginTop : 35}} onPress={()=> {
+              setRideStatus(content3)
+            }}>
+                <View style={{alignItems: 'center'}}>
+                  <Image source={item.image} style={{height: 50, width: 79.22}}/>
+                  </View>
+                  <View style={{alignItems: 'center', marginLeft: 5}}>
+                  <Text style={[styles.name,{marginRight  : "auto"}]}>{item.name}</Text>
+                  <Text style={styles.people}>{item.people} people</Text>
+                  </View>
+                  <View style={[styles.second,{marginLeft  : "auto"}]}>
+                  <Text style = {[styles.price]}>₦{numbro(item.priceStart).format({thousandSeparated: true,})} - {numbro(item.priceEnd).format({thousandSeparated: true,})}</Text>
+                  <Text style={styles.minutes}>{item.distance} minutes away</Text>
+                  </View>
+                </TouchableOpacity>
+          )}
+          showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{height: 170}}
+          />
+          <View style={{width: '100%', borderColor: '#F8F8F8', borderWidth: 0.8, marginTop: 20}}/>
+        <View style={{justifyContent: 'space-between', flexDirection: "row", marginTop: 27}}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <MasterCard/>
+            <Text style={styles.desc}>9645</Text>
+            </View>
+            <TouchableOpacity onPress={showModalChangeCard}>
+            <Text style={styles.link}>Switch</Text>
+            </TouchableOpacity>
+            </View>
+        </View>
+        </TouchableWithoutFeedback>
+        </SafeAreaView>
+      </>
+    )
+
+    const content3 =(
+      <>
+      <View style={{height: '71%'}}>
+        <ModalChangeCard
+          ref={modalChangeCard}
+          close={() => {
+            modalChangeCard.current.close();
+          }}
+        />
+        <MapView
+      style={styles.map}
+      showsUserLocation = {true}
+      provider={PROVIDER_GOOGLE}
+      followsUserLocation={true}
+     zoomEnabled = {true}
+     customMapStyle={splax}
+     //zoomControlEnabled={true}
+          initialRegion={{
+            latitude: 6.436034,
+            longitude: 3.444399,
+            latitudeDelta: 0.0822,
+            longitudeDelta: 0.0421,
+          }}
+      >
+        <Marker
+            coordinate={{ latitude: 6.436034,
+               longitude: 3.444399 }}
+            title={"Exon"}
+            description={"Your current location"}
+            draggable
+            onDragEnd={
+                (e) => alert(JSON.stringify(e.nativeEvent.coordinate))
+              }
+          >
+            <View style={{backgroundColor: "black", padding: 10, borderRadius: 10, alignItems: "center"}}>
+                <User/>
+            </View>
+          </Marker>
+      </MapView>
+        </View>
+        <TouchableOpacity style={styles.deff}>
+                <Text>{bro.slice(0,20)}</Text>
+                <Right/>
+                <Text>{bro1.slice(0,20)}</Text>
+
+        </TouchableOpacity>
+        <SafeAreaView style={[styles.miniContainer, {height: 204}]}>
+        <View style={{alignItems: 'center'}}>
+        <View style={{borderWidth: 2, borderColor:'#D9D9D9', width: '20%', borderRadius: 50}}/>
+        </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
+        <View>
+        <View style={{justifyContent: 'space-between', flexDirection: "row", marginTop: 36}}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <LocIcon/>
+            <Text style={styles.desc}>{bro}</Text>
+            </View>
+            <TouchableOpacity onPress={()=>{
+              navigation.navigate('SearchScreen')
+            }}>
+            <Text style={styles.link}>Switch</Text>
+            </TouchableOpacity>
+        </View>
+        <CustomButton
+          _onPress={()=>{
+            setRideStatus(content4)
+          }}
+          title="Confirm"
+          marginTop={40}
+          textStyle={{color: 'white'}}
+          containerStyle={{}}
+        />
+        </View>
+        </TouchableWithoutFeedback>
+        </SafeAreaView>
+      </>
+    )
+    const content4 = (
+      <>
+      <View style={{height: '77%'}}>
+        <ModalChangeCard
+          ref={modalChangeCard}
+          close={() => {
+            modalChangeCard.current.close();
+          }}
+        />
+        <MapView
+      style={styles.map}
+      showsUserLocation = {true}
+      provider={PROVIDER_GOOGLE}
+      followsUserLocation={true}
+     zoomEnabled = {true}
+     customMapStyle={splax}
+     //zoomControlEnabled={true}
+          initialRegion={{
+            latitude: 6.436034,
+            longitude: 3.444399,
+            latitudeDelta: 0.0822,
+            longitudeDelta: 0.0421,
+          }}
+      >
+        <Marker
+            coordinate={{ latitude: 6.436034,
+               longitude: 3.444399 }}
+            title={"Exon"}
+            description={"Your current location"}
+            draggable
+            onDragEnd={
+                (e) => alert(JSON.stringify(e.nativeEvent.coordinate))
+              }
+          >
+            <View style={{backgroundColor: "black", padding: 10, borderRadius: 10, alignItems: "center"}}>
+                <User/>
+            </View>
+          </Marker>
+      </MapView>
+        </View>
+        <TouchableOpacity style={styles.deff}>
+                <Text>{bro.slice(0,20)}</Text>
+                <Right/>
+                <Text>{bro1.slice(0,20)}</Text>
+
+        </TouchableOpacity>
+        <SafeAreaView style={[styles.miniContainer, {height: 154, paddingHorizontal: 0}]}>
+        <View style={{alignItems: 'center'}}>
+        <View style={{borderWidth: 2, borderColor:'#D9D9D9', width: '20%', borderRadius: 50}}/>
+        </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
+        <View style={{
+          paddingTop: 36,
+        }}>
+          <Text style={{
+            fontFamily: 'lexend-regular',
+            fontSize: 16,
+            paddingHorizontal: 30,
+            paddingBottom: 36
+          }}>Locating the nearest driver</Text>
+          <View accessibilityRole={'progressbar'} style={{backgroundColor: '#F8F8F8', height: 10, width: '100%', flexDirection: 'row'}}>
+            <Animated.View style={{backgroundColor:Colors.primary, height: 10, width: '20%', marginLeft: 116, transform: [{
+            rotateZ: rotationDegree.interpolate({
+              inputRange: [0, 360],
+              outputRange: ['0deg', '360deg']
+            })
+          }]}}/>
+            <Animated.View style={{backgroundColor:Colors.primary, height: 10, width: '20%', marginLeft: 116, transform: [{
+            rotateZ: rotationDegree.interpolate({
+              inputRange: [0, 360],
+              outputRange: ['0deg', '360deg']
+            })
+          }]}}/>
+          </View>
+        </View>
+        </TouchableWithoutFeedback>
+        </SafeAreaView>
+      </>
+    )
+    const [rideStatus, setRideStatus] = useState(content1)
+      const durationMs = 1000
+  Animated.loop(Animated.timing(
+    rotationDegree,
+    {
+      toValue: 360,
+      duration: durationMs,
+      easing: Easing.linear,
+      useNativeDriver: false
+    }
+  )).start()
+
+      useEffect(() => {
+        if(rideRequest) {
+
+          setRideStatus(content2)
+        }
+      }, [rideRequest])
+
+    return (
+    <View style={styles.container}>
+      {rideStatus}
     </View>
   )
 }
@@ -254,7 +455,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#fff",
-
     },
     map: {
         width: '100%',
@@ -332,5 +532,39 @@ const styles = StyleSheet.create({
       name:{
         fontSize: 16,
         fontFamily: 'lexend-regular',
+      },
+      people:{
+        marginTop: 6,
+        color: '#757575',
+        fontFamily: 'lexend-regular',
+      },
+      second:{
+
+      },
+      minutes:{
+        marginTop: 6,
+        color: Colors.primary,
+        fontFamily: 'lexend-regular',
+        marginLeft: 'auto'
+      },
+      price:{
+        fontFamily: 'lexend-medium',
+        fontSize: 16,
+      },
+      deff:{
+        position: 'absolute',
+        width: '90%',
+        backgroundColor: 'white',
+        borderRadius: 14,
+        height: 52,
+        top: 65,
+        left: 20,
+        right: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        elevation: 1,
+        //shadowOpacity: 0.1,
+        flexDirection: 'row',
       }
 })
