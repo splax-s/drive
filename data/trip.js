@@ -1,7 +1,7 @@
 export default [
     {
         id: "1",
-        price: '3800',
+        price: '2300',
         destination: 'Eko Hotels & suite',
         day: 1576590342000,
         month: "May",
@@ -41,7 +41,7 @@ export default [
     },
     {
         id: "6",
-        price: '3800',
+        price: '2500',
         destination: 'Eko Hotels & suite',
         day: 893984884,
         month: "July",

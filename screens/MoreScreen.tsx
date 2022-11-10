@@ -88,7 +88,7 @@ const deviceHeight = Dimensions.get("window").height
               originWhitelist={['*']}
               scrollEnabled={true}
               startInLoadingState={true}
-              renderLoading={() => <ActivityIndicator
+              renderLoading={() =><View style={{height: '100%', backgroundColor: 'white', alignItems: 'center', justifyContent: 'center'}}><ActivityIndicator
                 color={Colors.primary}
                 size='large'
                 style={{
@@ -97,7 +97,8 @@ const deviceHeight = Dimensions.get("window").height
                   flex: 1,
                   marginBottom: "50%"
                 }}
-             /> }
+             />
+             </View> }
             />
             </View>
           </SafeAreaView>

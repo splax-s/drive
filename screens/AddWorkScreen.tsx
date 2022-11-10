@@ -30,9 +30,14 @@ import Plus from '../assets/svg/plus'
 import Locat from "../assets/svg/locat"
 import Gps from '../assets/svg/gps'
 import Real from '../assets/svg/real'
+import { useDispatch } from "react-redux";
+import {setWork} from '../redux/slices'
+import { ActivityIndicator } from "react-native-paper";
+navigator.geolocation = require("expo-location");
 
 
 const AddWorkScreen = ({navigation}) => {
+  const dispatch = useDispatch();
   const fromRef = useRef();
   const whereRef = useRef();
   const [loading, setLoading] = useState(false);
@@ -56,6 +61,7 @@ const AddWorkScreen = ({navigation}) => {
     };
 
     setTimeout(() => {
+      navigation.goBack()
       setLoading(false);
 
 
@@ -91,13 +97,37 @@ const AddWorkScreen = ({navigation}) => {
         debounce={200}
         minLength={2}
         autoFocus={true}
+        currentLocation={true}
+        listLoaderComponent={()=>{
+          return(
+            <ActivityIndicator
+              color={Colors.primary}
+              size='small'
+              animating={true}
+              style={{
+                alignItems: 'center',
+                justifyContent: "center",
+                flex: 1,
+              }}
+           />
+          )
+        }}
         returnKeyType={'search'}
+        textInputProps={{
+          placeholderTextColor: 'rgba(117, 117, 117, 1)',
+          returnKeyType: "search"
+        }}
         //suppressDefaultStyles
         enablePoweredByContainer={false}
         nearbyPlacesAPI="GooglePlacesSearch"
         fetchDetails={true}
         renderLeftButton={() => (
           <SearchIcon/>
+        )}
+        listEmptyComponent={() => (
+          <View style={{flex: 1}}>
+            <Text style={styles.text}>No results were found</Text>
+          </View>
         )}
 
         renderRow={results => {
@@ -138,12 +168,17 @@ const AddWorkScreen = ({navigation}) => {
         ref={fromRef}
         onPress={(data, details = null) => {
           // 'details' is provided when fetchDetails = true
+          dispatch(setWork({
+            Location:details.geometry.location,
+            description: data.description,
+          }))
           setFrom(data.description)
           //console.log(data, details);
         }}
         query={{
           key: "AIzaSyBkI2Q0pVP9cuXHc_Xk3N8-nn_wKzSewKM",
           language: "en",
+          components: 'country:ng'
         }}
       />
       <CustomButton
@@ -218,7 +253,7 @@ const styles = StyleSheet.create({
   },
   listView: {
     position: 'absolute',
-      top: 100,
+      top: 65,
       marginTop: 20,
       borderRadius: 5,
       flex: 1,
@@ -226,7 +261,7 @@ const styles = StyleSheet.create({
   },
   listView1: {
     position: 'absolute',
-      top: 50,
+      top: 40,
       marginTop: 0,
 
   },
@@ -242,5 +277,10 @@ const styles = StyleSheet.create({
   },
   loc:{
     marginLeft: 10,
-  }
+  },
+  text:{
+    color: 'rgba(117, 117, 117, 1)',
+    fontFamily: 'lexend-regular',
+    fontSize: 14,
+  },
 })

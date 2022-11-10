@@ -28,8 +28,17 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import Plus from '../assets/svg/plus'
 import Real from '../assets/svg/real'
 import { ActivityIndicator } from "react-native-paper";
+import {setDestination, setOrigin} from '../redux/slices'
+import { useDispatch } from "react-redux";
+import { useSelector } from 'react-redux'
+import { selectHome, selectWork } from '../redux/slices'
+navigator.geolocation = require('expo-location')
+//console.log(navigator.geolocation.getCurrentPosition)
 
 const SearchScreen = ({ navigation }) => {
+  const home = useSelector(selectHome)
+  const work = useSelector(selectWork)
+  const dispatch = useDispatch();
   const fromRef = useRef();
   const whereRef = useRef();
   const [loading, setLoading] = useState(false);
@@ -59,7 +68,18 @@ const SearchScreen = ({ navigation }) => {
 
     }, 3000);
 
+
 }
+
+const homePlace = {
+  description: 'Home',
+  geometry: { location: { lat: home.Location.lat, lng: home.Location.lng } },
+};
+const workPlace = {
+  description: 'Work',
+  geometry: { location: { lat: work.Location.lat, lng: work.Location.lng } },
+};
+
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -120,6 +140,7 @@ const SearchScreen = ({ navigation }) => {
           enablePoweredByContainer={false}
           nearbyPlacesAPI="GooglePlacesSearch"
           fetchDetails={true}
+          predefinedPlaces={[homePlace, workPlace]}
 
           renderLeftButton={() => (
             <SearchIcon/>
@@ -159,9 +180,14 @@ const SearchScreen = ({ navigation }) => {
           ref={fromRef}
           onPress={(data, details = null) => {
             // 'details' is provided when fetchDetails = true
+            dispatch(setOrigin({
+              Location:details.geometry.location,
+              description: data.description,
+            }))
             setFrom(data.description)
-            //console.log(data, details);
+            // console.log(details.geometry.location);
           }}
+          currentLocation={true}
           query={{
             key: "AIzaSyBkI2Q0pVP9cuXHc_Xk3N8-nn_wKzSewKM",
             language: "en",
@@ -189,6 +215,7 @@ const SearchScreen = ({ navigation }) => {
             )
           }}
           returnKeyType={'search'}
+          predefinedPlaces={[homePlace, workPlace]}
           //suppressDefaultStyles
           enablePoweredByContainer={false}
           textInputProps={{
@@ -241,6 +268,10 @@ const SearchScreen = ({ navigation }) => {
           onPress={(data, details = null) => {
             // 'details' is provided when fetchDetails = true
             //console.log(data, details);
+            dispatch(setDestination({
+              Location:details.geometry.location,
+              description: data.description,
+            }))
             setTo(data.description)
           }}
           query={{
@@ -255,7 +286,7 @@ const SearchScreen = ({ navigation }) => {
         <CustomButton
           _onPress={handleSubmit}
           title="Request Ride"
-          marginTop={570}
+          marginTop={550}
           loading={loading}
           textStyle={{color: 'white'}}
           disabled={disabled}

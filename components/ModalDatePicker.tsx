@@ -13,7 +13,6 @@ import SwipePicker from 'react-native-swipe-picker'
 import DynamicallySelectedPicker from 'react-native-dynamically-selected-picker';
 import HorizontalPicker from '@vseslav/react-native-horizontal-picker';
 import HorizontalScrollMenu, { RouteProps } from '@nyashanziramasanga/react-native-horizontal-scroll-menu/src';
-import HorizontalScrollPicker  from '../CustomModule/CustomModule'
 
 import Back from "../assets/svg/back";
 

@@ -23,10 +23,13 @@ import * as Yup from "yup";
 import ErrorText from '../components/ErrorText';
 import CustomTextInput from "../components/CustomTextInput";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { setProfilePic } from "../redux/slices";
+import { useDispatch } from "react-redux";
 
 
 
 const ProfileScreen = ({navigation}) => {
+  const dispatch = useDispatch();
   const passwordRef = useRef();
     const nameRef = useRef();
     const phoneRef = useRef();
@@ -63,6 +66,9 @@ const ProfileScreen = ({navigation}) => {
       if (!result.cancelled) {
         setImage(result.uri);
         try {
+          dispatch(setProfilePic({
+            profile:result.uri,
+          }))
           await AsyncStorage.setItem('@image', result.uri)
         } catch (e) {
           // saving error

@@ -15,7 +15,6 @@ export default function useCachedResources() {
         // Load fonts
         await Font.loadAsync({
           ...FontAwesome.font,
-          'space-mono': require('../assets/fonts/SpaceMono-Regular.ttf'),
           'lexend-bold': require('../assets/fonts/Lexend-Bold.ttf'),
           'lexend-extrabold': require('../assets/fonts/Lexend-ExtraBold.ttf'),
           'lexend-light': require('../assets/fonts/Lexend-Light.ttf'),

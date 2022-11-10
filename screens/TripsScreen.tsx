@@ -20,8 +20,16 @@ import {
   import Clock from '../assets/svg/clockBig'
   import numbro from 'numbro'
   import moment from "moment";
+  import ModalTripDetails from "../components/ModalTripDetails";
 
 const TripsScreen = () => {
+  const modalTripDetails = useRef()
+
+  const showModalTripDetails = () => {
+    modalTripDetails.current.open();
+
+};
+
    const [trips, setTrips] = useState(true)
     // const date = console.log(new Date())
     const DATA = Object.values(hi.reduce((acc, item) => {
@@ -37,18 +45,24 @@ const TripsScreen = () => {
 
       const renderItems = ({ item }) => {
         return (
-          <View style={styles.itemStyle}>
-            <View style={{flexDirection: 'row',}}>
+          <TouchableOpacity style={styles.itemStyle} onPress={showModalTripDetails}>
+            <ModalTripDetails
+          ref={modalTripDetails}
+          close={() => {
+            modalTripDetails.current.close();
+          }}
+        />
+            <TouchableOpacity style={{flexDirection: 'row',}} onPress={showModalTripDetails}>
                 <Clock/>
                 <View style={{marginLeft: 12}}>
                 <Text style={styles.text}>{item.destination}</Text>
                 <Text style={styles.text1}>{moment(item.date).format('D MMMM YYYY')}, {moment(item.date).format('hh:mma')}</Text>
                 </View>
-            </View>
+            </TouchableOpacity>
             <Text style={styles.text3}>₦{numbro(item.price).format({
                  thousandSeparated: true,
             })}</Text>
-          </View>
+          </TouchableOpacity>
         )
       }
       const renderHeader = ({ section }) => {

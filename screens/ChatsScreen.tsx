@@ -15,23 +15,11 @@ import {
 import React, { useEffect, useState, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Colors from "../constants/Colors";
-import CustomButton from "../components/CustomButton";
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
-import User from "../assets/svg/user2";
-const { width, height } = Dimensions.get("window");
-import extraStyle from "../json.json";
+
 import Home from "../assets/svg/home";
 import Back from "../assets/svg/back";
 import Call from '../assets/svg/call';
 import Send from '../assets/svg/sent'
-import Calender from "../assets/svg/calender";
-import SearchIcon from "../assets/svg/location";
-import Draggable from "react-native-draggable";
-import CustomTextInput from "../components/CustomTextInput";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import Plus from '../assets/svg/plus'
-import Real from '../assets/svg/real'
-import { ActivityIndicator } from "react-native-paper";
 
 const ChatsScreen = ({navigation}) => {
   const [currentUser] = useState({
@@ -115,6 +103,7 @@ const ChatsScreen = ({navigation}) => {
         message: inputMessage,
         time: t,
       },
+
     ]);
     setInputMessage('');
   }
@@ -190,7 +179,20 @@ const ChatsScreen = ({navigation}) => {
                   >
                     {item.message}
                   </Text>
+
                 </View>
+                {item.sender === currentUser.name  ? (
+                   <Text
+                   style={{
+                     fontSize: 12,
+                     fontFamily: 'lexend-regular',
+                     color: '#757575',
+                     marginLeft: 'auto',
+                     marginTop: 6
+                   }}
+                   >Read</Text>
+                ) : null}
+
               </View>
             </TouchableWithoutFeedback>
           )}

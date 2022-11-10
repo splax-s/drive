@@ -30,8 +30,13 @@ import {
   import Locat from "../assets/svg/locat"
   import Gps from '../assets/svg/gps'
   import Real from '../assets/svg/real'
+import { useDispatch } from "react-redux";
+import {setHome} from '../redux/slices'
+import { ActivityIndicator } from "react-native-paper";
+navigator.geolocation = require("expo-location");
 
 const AddHomeScreen = ({navigation}) => {
+  const dispatch = useDispatch();
     const fromRef = useRef();
   const whereRef = useRef();
   const [loading, setLoading] = useState(false);
@@ -56,7 +61,7 @@ const AddHomeScreen = ({navigation}) => {
 
     setTimeout(() => {
       setLoading(false);
-
+      navigation.goBack();
 
     }, 3000);
 
@@ -90,9 +95,25 @@ const AddHomeScreen = ({navigation}) => {
           minLength={2}
           autoFocus={true}
           returnKeyType={'search'}
+          listLoaderComponent={()=>{
+            return(
+              <ActivityIndicator
+                color={Colors.primary}
+                size='small'
+                animating={true}
+                style={{
+                  alignItems: 'center',
+                  justifyContent: "center",
+                  flex: 1,
+                }}
+             />
+            )
+          }}
+
           //suppressDefaultStyles
           enablePoweredByContainer={false}
           nearbyPlacesAPI="GooglePlacesSearch"
+          currentLocation={true}
           fetchDetails={true}
           textInputProps={{
             placeholderTextColor: 'rgba(117, 117, 117, 1)',
@@ -100,6 +121,11 @@ const AddHomeScreen = ({navigation}) => {
           }}
           renderLeftButton={() => (
             <SearchIcon/>
+          )}
+          listEmptyComponent={() => (
+            <View style={{flex: 1}}>
+              <Text style={styles.text}>No results were found</Text>
+            </View>
           )}
 
           renderRow={results => {
@@ -136,12 +162,17 @@ const AddHomeScreen = ({navigation}) => {
           ref={fromRef}
           onPress={(data, details = null) => {
             // 'details' is provided when fetchDetails = true
+            dispatch(setHome({
+              Location:details.geometry.location,
+              description: data.description,
+            }))
             setFrom(data.description)
             //console.log(data, details);
           }}
           query={{
             key: "AIzaSyBkI2Q0pVP9cuXHc_Xk3N8-nn_wKzSewKM",
             language: "en",
+            components: 'country:ng'
           }}
         />
         <CustomButton
@@ -216,7 +247,7 @@ const styles = StyleSheet.create({
       },
       listView: {
         position: 'absolute',
-          top: 100,
+          top: 65,
           marginTop: 20,
           borderRadius: 5,
           flex: 1,
@@ -240,5 +271,10 @@ const styles = StyleSheet.create({
       },
       loc:{
         marginLeft: 10,
-      }
+      },
+      text:{
+        color: 'rgba(117, 117, 117, 1)',
+        fontFamily: 'lexend-regular',
+        fontSize: 14,
+      },
 })

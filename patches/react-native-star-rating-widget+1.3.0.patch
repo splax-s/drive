@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-star-rating-widget/src/StarRating.tsx b/node_modules/react-native-star-rating-widget/src/StarRating.tsx
+index a2ebec1..97618b8 100644
+--- a/node_modules/react-native-star-rating-widget/src/StarRating.tsx
++++ b/node_modules/react-native-star-rating-widget/src/StarRating.tsx
+@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
+         alignSelf: "flex-start",
+     },
+     star: {
+-        marginHorizontal: 5,
++        marginHorizontal: 15,
+     },
+ });
+ 

@@ -35,7 +35,7 @@ const CallScreen = ({navigation}) => {
           {speaker ? (
             <FontAwesome name="volume-up" size={37} color="black" />
           ) : (
-            <FontAwesome5 name="volume-off" size={37} color="white" />
+            <FontAwesome5 name="volume-down" size={37} color="white" />
           )}
 
         </TouchableOpacity>

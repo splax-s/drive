@@ -25,6 +25,7 @@ import {
   import LocIcon from "../assets/svg/locIcon"
   import MasterCard from "../assets/svg/mastercard"
 import { ActivityIndicator } from "react-native-paper";
+navigator.geolocation = require("expo-location");
 
 
 const ScheduleRideScreen = ({navigation}) => {
@@ -123,6 +124,7 @@ const showModalChangeCard = () => {
           minLength={2}
           autoFocus={true}
           returnKeyType={'search'}
+          currentLocation={true}
           //suppressDefaultStyles
           enablePoweredByContainer={false}
           nearbyPlacesAPI="GooglePlacesSearch"
@@ -203,6 +205,7 @@ const showModalChangeCard = () => {
           placeholder="Dropoff Location"
           debounce={200}
           minLength={2}
+          currentLocation={true}
           autoFocus={true}
           returnKeyType={'search'}
           listEmptyComponent={() => (
@@ -416,7 +419,7 @@ const styles = StyleSheet.create({
       },
       listView1: {
         position: 'absolute',
-          top: 130,
+          top: 125,
           marginTop: 0,
 
       },

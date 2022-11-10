@@ -1,4 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
+import 'expo-dev-client';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import React, {useEffect, useState, createContext, useRef} from 'react';
 import useCachedResources from './hooks/useCachedResources';
@@ -10,6 +11,10 @@ import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
 import * as Device from 'expo-device';
 import Context from "./hooks/Provider";
+import {Provider} from 'react-redux'
+import {store } from './redux/store'
+import * as Location from 'expo-location';
+import * as TaskManager from 'expo-task-manager';
 
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -22,6 +27,7 @@ Notifications.setNotificationHandler({
     shouldSetBadge: true,
   }),
 });
+const LOCATION_TRACKING = 'location-tracking';
 
 async function registerForPushNotificationsAsync() {
   let token: string;
@@ -55,6 +61,7 @@ async function registerForPushNotificationsAsync() {
 }
 
 
+
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
@@ -65,6 +72,11 @@ export default function App() {
   const responseListener = useRef();
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [address, setAddress] = useState(null);
+  const [getLocation, setGetLocation] = useState(false);
+  const [locationStarted, setLocationStarted] = React.useState(false);
 
   const [user, setUser] = useState({
     details: {},
@@ -97,7 +109,8 @@ export default function App() {
     hasLocalData: hasLocalData,
     setHasLocalData: setHasLocalData,
     expoPushToken: expoPushToken,
-    imageChanged: false
+    imageChanged: false,
+    location: location,
   };
 
   const removeValue = async () => {
@@ -140,6 +153,57 @@ export default function App() {
     };
   }, []);
 
+  const startLocationTracking = async () => {
+    await Location.startLocationUpdatesAsync(LOCATION_TRACKING, {
+        accuracy: Location.Accuracy.Highest,
+        timeInterval:10000,
+        distanceInterval: 0,
+    });
+    const hasStarted = await Location.hasStartedLocationUpdatesAsync(
+        LOCATION_TRACKING
+    );
+    setLocationStarted(hasStarted);
+    console.log('tracking started?', hasStarted);
+};
+
+const startLocation = () => {
+  startLocationTracking();
+}
+
+startLocation()
+
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      let status1 = await Location.requestBackgroundPermissionsAsync();
+      if (status !== 'granted' || status1.status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+      }
+
+      Location.setGoogleApiKey("AIzaSyBkI2Q0pVP9cuXHc_Xk3N8-nn_wKzSewKM");
+
+      let { coords } = await Location.getCurrentPositionAsync();
+      setLocation(coords);
+
+      console.log(coords);
+
+
+      if (coords) {
+        let { longitude, latitude } = coords;
+
+        let regionName = await Location.reverseGeocodeAsync({
+          longitude,
+          latitude,
+        });
+        setAddress(regionName[0]);
+        // console.log(regionName, 'nothing');
+      }
+
+      // console.log();
+    })();
+  }, [getLocation]);
+
 
 
   if (!isLoadingComplete) {
@@ -147,11 +211,31 @@ export default function App() {
   } else {
     return (
       <SafeAreaProvider>
+        <Provider store={store}>
          <Context.Provider value={userContext}>
          <Navigation colorScheme={colorScheme} />
          </Context.Provider>
         <StatusBar />
+        </Provider>
+
       </SafeAreaProvider>
     );
   }
 }
+
+TaskManager.defineTask(LOCATION_TRACKING, async ({ data, error }) => {
+  if (error) {
+      console.log('LOCATION_TRACKING task ERROR:', error);
+      return;
+  }
+  if (data) {
+      let { locations } = data;
+      let lat = locations[0].coords.latitude;
+      let long = locations[0].coords.longitude;
+console.log(
+          `${new Date(Date.now()).toLocaleString()}: ${lat},${long}`
+      );
+      // console.log(locations.latitude, locations.longitude)
+      return locations
+  }
+});
